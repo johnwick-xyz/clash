@@ -91,14 +91,25 @@ proxy-providers:
 # 从链接导入的配置文件（支持多个Clash 订阅链接）
  air:
    type: http
-   path: ./profiles/proxies/ytoo.yaml
-   url: 机场订阅链接
+   path: ./profiles/proxies/air.yaml
+   url: 机场链接
    interval: 3600
    filter: '0.2'  #选择节点
    health-check:
      enable: true
      url: http://www.gstatic.com/generate_204
      interval: 300
+
+ sub:
+   type: http
+   path: ./profiles/proxies/sub.yaml
+   url: 自建链接
+   interval: 3600
+   health-check:
+     enable: true
+     url: http://www.gstatic.com/generate_204
+     interval: 300
+
 
 proxy-groups:
 - name: PROXY
@@ -107,6 +118,7 @@ proxy-groups:
   interval: 3600
   use: # 引入proxy-provider 使用 use 关键字
    - air
+   - sub
   proxies:
    - DIRECT
 
