@@ -1,0 +1,93 @@
+mixed-port: 7890
+#---------------------------------------------------#
+allow-lan: true
+mode: Rule
+log-level: info
+external-controller: 0.0.0.0:9090
+
+proxy-providers:
+# 从链接导入的配置文件（支持多个Clash 订阅链接）
+ ytoo:
+   type: http
+   path: ./profiles/proxies/ytoo.yaml
+   url: 机场订阅链接
+   interval: 3600
+   filter: '0.2'  #选择节点
+   health-check:
+     enable: true
+     url: http://www.gstatic.com/generate_204
+     interval: 300
+
+proxy-groups:
+- name: PROXY
+  type: select   #url-test    自动选延迟最低的   select  手动选
+  url: http://www.gstatic.com/generate_204
+  interval: 3600
+  use: # 引入proxy-provider 使用 use 关键字
+   - ytoo
+  proxies:
+   - DIRECT
+
+rule-providers:
+   AdvertisingLite_Domain:
+    type: http
+    behavior: domain        #    domain  域名    ipcidr  IP
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AdvertisingLite/AdvertisingLite_Domain.yaml"
+    path: ./ruleset/AdvertisingLite_Domain.yaml
+    interval: 86400
+
+   Telegram:
+    type: http
+    behavior: domain        #    domain  域名    ipcidr  IP
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml"
+    path: ./ruleset/Telegram.yaml
+    interval: 86400
+
+   WeChat:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/WeChat/WeChat.yaml"
+    path: ./ruleset/WeChat.yaml
+    interval: 86400
+
+   Apple:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml"
+    path: ./ruleset/Apple.yaml
+    interval: 86400
+
+   Steam:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Steam/Steam.yaml"
+    path: ./ruleset/Steam.yaml
+    interval: 86400
+
+   China:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.yaml"
+    path: ./ruleset/China.yaml
+    interval: 86400
+
+   Lan:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml"
+    path: ./ruleset/Lan.yaml
+    interval: 86400
+
+
+
+rules:
+  - RULE-SET,AdvertisingLite_Domain,REJECT
+  - RULE-SET,Telegram,PROXY
+  - RULE-SET,WeChat,DIRECT
+  - RULE-SET,Apple,DIRECT
+  - RULE-SET,Steam,DIRECT
+  - RULE-SET,China,DIRECT
+  - RULE-SET,Lan,DIRECT
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,PROXY
