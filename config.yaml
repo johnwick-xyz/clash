@@ -7,7 +7,7 @@ external-controller: 0.0.0.0:9090
 
 dns:
   enable: true
-  ipv6: false
+  ipv6: true
   listen: 127.0.0.1:8853
   enhanced-mode: fake-ip
   nameserver:
@@ -85,13 +85,56 @@ dns:
     - "*.ipv6.microsoft.com"
     - "*.*.xboxlive.com"
     - speedtest.cros.wr.pvp.net
-    
+
+proxies:
+  - name: "reality"       
+    type: vless
+    server: 1.1.1.1      #vps ip
+    port: 11111          #vps 端口
+    uuid: 11111
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: www.amazon.com # REALITY servername
+    reality-opts:
+      public-key: 11111
+    client-fingerprint: chrome # cannot be empty 
+
+  - name: "reality2"       
+    type: vless
+    server: 1.1.1.1      #vps ip
+    port: 11111          #vps 端口
+    uuid: 11111
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: www.amazon.com # REALITY servername
+    reality-opts:
+      public-key: 11111
+    client-fingerprint: chrome # cannot be empty
+
+  - name: "reality3"       
+    type: vless
+    server: 1.1.1.1      #vps ip
+    port: 11111          #vps 端口
+    uuid: 11111
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: www.amazon.com # REALITY servername
+    reality-opts:
+      public-key: 11111
+    client-fingerprint: chrome # cannot be empty
+   
 proxy-providers:
 # 从链接导入的配置文件（支持多个Clash 订阅链接）
- air:
+ air:       #自定义
    type: http
    path: ./profiles/proxies/air.yaml
-   url: 机场链接
+   url: #订阅地址
    interval: 3600
    filter: '0.2'  #选择节点
    health-check:
@@ -99,41 +142,76 @@ proxy-providers:
      url: http://www.gstatic.com/generate_204
      interval: 300
 
- sub:
-   type: http
-   path: ./profiles/proxies/sub.yaml
-   url: 自建链接
-   interval: 3600
-   health-check:
-     enable: true
-     url: http://www.gstatic.com/generate_204
-     interval: 300
-
 
 proxy-groups:
+- name: 代理链
+  type: relay
+  proxies:
+   - reality  
+   - reality2
+ 
 - name: PROXY
   type: select   #url-test    自动选延迟最低的   select  手动选
   url: http://www.gstatic.com/generate_204
-  interval: 3600
+  interval: 300
+  proxies:
+   - reality
+   - reality2
+   - reality3
+   - 机场名
+   - vps
+   - 代理链   
+   - DIRECT
+
+- name: vps
+  type: select  #url-test    自动选延迟最低的   select  手动选
+  url: http://www.gstatic.com/generate_204
+  interval: 300
+  proxies:
+   - reality
+   - reality2
+   - reality3
+
+- name: OpenAI
+  type: url-test   #url-test    自动选延迟最低的   select  手动选
+  url: http://www.gstatic.com/generate_204
+  interval: 300
+  proxies:
+   - reality
+   - reality2
+   - reality3
+
+- name: Telegram
+  type: select   #url-test    自动选延迟最低的   select  手动选
+  url: http://www.gstatic.com/generate_204
+  interval: 300
   use: # 引入proxy-provider 使用 use 关键字
    - air
-   - sub
   proxies:
-   - DIRECT
+   - reality
+   - reality2
+   - reality3
+
+- name: 机场名
+  type: select   #url-test    自动选延迟最低的   select  手动选
+  url: http://www.gstatic.com/generate_204
+  interval: 300
+  use: # 引入proxy-provider 使用 use 关键字
+   - air       
 
 rule-providers:
    Telegram:
     type: http
-    behavior: domain        #    domain  域名    ipcidr  IP
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml"
+    behavior: ipcidr        #    domain  域名    ipcidr  IP
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram_No_Resolve.yaml"
     path: ./ruleset/Telegram.yaml
     interval: 86400
 
-   WeChat:
+   OpenAI:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/WeChat/WeChat.yaml"
-    path: ./ruleset/WeChat.yaml
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml"
+    path: ./ruleset/OpenAI.yaml
     interval: 86400
 
    Apple:
@@ -164,21 +242,46 @@ rule-providers:
     path: ./ruleset/Lan.yaml
     interval: 86400
 
+   Spotify:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.yaml"
+    path: ./ruleset/Spotify.yaml
+    interval: 86400    
 
+   Bing:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bing/Bing.yaml"
+    path: ./ruleset/Bing.yaml
+    interval: 86400
+
+   Microsoft:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml"
+    path: ./ruleset/Microsoft.yaml
+    interval: 86400
 
 rules:
   - RULE-SET,Telegram,Telegram
-  - RULE-SET,YouTube,PROXY
-  - IP-CIDR,109.239.140.0/24,Telegram,no-resolve
-  - IP-CIDR,149.154.160.0/20,Telegram,no-resolve
-  - IP-CIDR,5.28.195.163/32,Telegram,no-resolve
-  - IP-CIDR,5.28.195.205/32,Telegram,no-resolve
-  - IP-CIDR,5.28.195.37/32,Telegram,no-resolve
-  - IP-CIDR,91.108.0.0/16,Telegram,no-resolve
-  - IP-CIDR6,2001:67c:4e8::/48,Telegram,no-resolve
-  - IP-CIDR6,2001:b28:f23c::/47,Telegram,no-resolve
-  - IP-CIDR6,2001:b28:f23f::/48,Telegram,no-resolve
-  - IP-CIDR6,2a0a:f280::/32,Telegram,no-resolve
+  - RULE-SET,OpenAI,OpenAI
+  - RULE-SET,Bing,DIRECT
+  - RULE-SET,Microsoft,DIRECT
+  - DOMAIN-SUFFIX,rewards.bing.com,DIRECT
+  - DOMAIN-SUFFIX,prod.rewardsplatform.microsoft.com,DIRECT
+  - IP-CIDR,109.239.140.0/24,Telegram
+  - IP-CIDR,149.154.160.0/20,Telegram
+  - IP-CIDR,5.28.195.163/32,Telegram
+  - IP-CIDR,5.28.195.205/32,Telegram
+  - IP-CIDR,5.28.195.37/32,Telegram
+  - IP-CIDR,5.28.195.80/32,Telegram
+  - IP-CIDR,91.108.0.0/16,Telegram
+  - IP-CIDR6,2001:67c:4e8::/48,Telegram
+  - IP-CIDR6,2001:b28:f23c::/47,Telegram
+  - IP-CIDR6,2001:b28:f23f::/48,Telegram
+  - IP-CIDR6,2a0a:f280::/32,Telegram
   - GEOIP,LAN,DIRECT
   - GEOIP,CN,DIRECT
-  - MATCH,PROXY 
+  - MATCH,PROXY  
+
