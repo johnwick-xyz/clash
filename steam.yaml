@@ -71,3 +71,10 @@ payload:
   - DOMAIN-SUFFIX,ext5-dfw1.steamserver.net
   - DOMAIN-SUFFIX,ext6-dfw1.steamserver.net
   - DOMAIN-SUFFIX,ext7-dfw1.steamserver.net
+  - DOMAIN-SUFFIX,ext1-sgp1.steamserver.net
+  - DOMAIN-SUFFIX,ext2-sgp1.steamserver.net
+  - DOMAIN-SUFFIX,ext3-sgp1.steamserver.net
+  - DOMAIN-SUFFIX,ext4-sgp1.steamserver.net
+  - DOMAIN-SUFFIX,ext5-sgp1.steamserver.net
+  - DOMAIN-SUFFIX,ext6-sgp1.steamserver.net
+  - DOMAIN-SUFFIX,ext7-sgp1.steamserver.net
