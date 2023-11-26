@@ -57,6 +57,7 @@ payload:
   - DOMAIN-KEYWORD,steambroadcast
   - DOMAIN-KEYWORD,steamstore
   - DOMAIN-KEYWORD,steamuserimages
+  - DOMAIN-KEYWORD,steamserver
   - DOMAIN-SUFFIX,ext1-lax1.steamserver.net
   - DOMAIN-SUFFIX,ext2-lax1.steamserver.net
   - DOMAIN-SUFFIX,ext3-lax1.steamserver.net
@@ -78,3 +79,10 @@ payload:
   - DOMAIN-SUFFIX,ext5-sgp1.steamserver.net
   - DOMAIN-SUFFIX,ext6-sgp1.steamserver.net
   - DOMAIN-SUFFIX,ext7-sgp1.steamserver.net
+  - DOMAIN-SUFFIX,ext1-tyo3.steamserver.net
+  - DOMAIN-SUFFIX,ext2-tyo3.steamserver.net
+  - DOMAIN-SUFFIX,ext3-tyo3.steamserver.net
+  - DOMAIN-SUFFIX,ext4-tyo3.steamserver.net
+  - DOMAIN-SUFFIX,ext5-tyo3.steamserver.net
+  - DOMAIN-SUFFIX,ext6-tyo3.steamserver.net
+  - DOMAIN-SUFFIX,ext7-tyo3.steamserver.net
